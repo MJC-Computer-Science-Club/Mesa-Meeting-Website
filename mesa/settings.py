@@ -39,8 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Third Party
+    'rest_framework',
+
+    # Own
     "homepage",
-    "frontend",
+    "frontend.apps.FrontendConfig",
+    "user",
+    "rest",
+
 ]
 
 MIDDLEWARE = [
@@ -58,7 +65,7 @@ ROOT_URLCONF = 'mesa.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "frontend/build")],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,10 +128,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "frontend/build/static")
+    os.path.join(BASE_DIR, "static")
 ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10
+}
