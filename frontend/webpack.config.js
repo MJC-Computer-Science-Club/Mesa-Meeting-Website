@@ -16,7 +16,32 @@ module.exports = {
           loader: "babel-loader",
         },
       },
-    ],
+    , {
+        test: /\.(css)$/,
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader'
+          },
+    
+        //   {
+        //     loader: 'postcss-loader',
+        //     options: {
+        //       postcssOptions: {
+        //         plugins: () => [
+        //           require('autoprefixer')
+        //         ]
+        //       }
+        //     }
+        //   },
+        //   {
+        //     loader: 'sass-loader'
+        //   }
+        ]
+      }
+    ]
   },
   optimization: {
     minimize: true,
@@ -29,4 +54,7 @@ module.exports = {
       },
     }),
   ],
+  resolve: {
+    extensions: [".jsx", ".js"]
+  },
 };
