@@ -6,6 +6,12 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Defaultnavbar from "./Defaultnavbar";
+import { BrowserRouter as Router, Routes, Route, Link, Redirect } from "react-router-dom";
+import Login from "./Login"
+
+// Images
+import stupid_pic from "../../static/images/stupid_pic.png"
+import HomePage from "./HomePage";
 
 export default class App extends Component {
     constructor(props) {
@@ -13,11 +19,15 @@ export default class App extends Component {
     }
 
     render() {
-        return(
+        return (
             <div>
                 <Defaultnavbar />
-                <h1>Testing Mesa Code, Yippie!</h1>
-                <Button>React Button Test</Button>
+                <Router>
+                    <Routes>
+                        <Route exact path="/" element={ <HomePage /> } />
+                        <Route exact path="/login" element={<Login />} />
+                    </Routes>
+                </Router>
             </div>
         )
     }

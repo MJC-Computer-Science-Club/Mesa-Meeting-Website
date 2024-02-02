@@ -1,18 +1,26 @@
 import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import React, { Component } from "react";
+import mesa_logo from "../../static/images/mesa_logo.png"
+import Button from 'react-bootstrap/Button';
 
 export default function Defaultnavbar() {
   return (
-        <Navbar className="bg-body-tertiary">
+        <Navbar className="navbar navbar-dark bg-dark">
           <Container>
-            <Navbar.Brand href="#home">Mesa Meeting Site</Navbar.Brand>
+            <Navbar.Brand href="#home">
+              <a href="/">
+                <img src={mesa_logo} alt="Logo" />
+              </a>
+              </Navbar.Brand>
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
               <Navbar.Text>
-                Signed in as: <a href="#login">Test User</a>
+                <Button className="btn btn-primary">
+                  <a href="/login">
+                    Login
+                  </a>
+                </Button>
               </Navbar.Text>
             </Navbar.Collapse>
           </Container>

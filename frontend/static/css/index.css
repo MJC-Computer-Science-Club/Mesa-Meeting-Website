@@ -1,3 +1,50 @@
+:root {
+    --black: #050316;
+    --background: #bbe2c5;
+    --primary: #7fd781;
+    --secondary: #eeeed3;
+    --accent: #ac552a;
+  }
+
 body {
-    color: brown;
+    background-color: var(--background);
 }
+
+img {
+    width: 100px;
+}
+
+.hero {
+    margin-top: 25vh;
+}
+
+.hero-image {
+    width: 50%;
+}
+
+p, h1 {
+    text-align: left;
+}
+
+a {
+    text-decoration: none;
+}
+
+.main-box {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    padding: 2em;
+    background-color: #f2f2f2;
+    border-radius: 2em;
+}
+
+/* src/components/Login.css */
+
+.login-container {
+    background-color: #fff;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+}
+  

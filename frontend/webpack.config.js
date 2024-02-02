@@ -40,6 +40,19 @@ module.exports = {
         //     loader: 'sass-loader'
         //   }
         ]
+      },
+      {
+        test: /\.png$/,
+        loader: "file-loader",
+        options: {
+          name: '[name].[ext]',
+          outputPath: "static/images",
+          publicPath: 'static/images',
+          emitFile: true,
+          esModule: false
+
+      }
+
       }
     ]
   },
