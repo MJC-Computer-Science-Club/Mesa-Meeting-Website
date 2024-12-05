@@ -11,4 +11,11 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all().order_by("-first_name")
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
+    
+    def get_permissions(self):
+        if self.action == 'create':
+            permission_classes = []
+        else:
+            permission_classes = [permissions.IsAuthenticated]
+        return [permission() for permission in permission_classes]

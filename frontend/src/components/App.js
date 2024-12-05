@@ -6,7 +6,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Defaultnavbar from "./Defaultnavbar";
-import { BrowserRouter as Router, Routes, Route, Link, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, Redirect, BrowserRouter } from "react-router-dom";
 import Login from "./Login"
 
 // Images
@@ -22,12 +22,12 @@ export default class App extends Component {
         return (
             <div>
                 <Defaultnavbar />
-                <Router>
-                    <Routes>
-                        <Route exact path="/" element={ <HomePage /> } />
-                        <Route exact path="/login" element={<Login />} />
-                    </Routes>
-                </Router>
+                <BrowserRouter>
+                        <Routes>
+                            <Route exact path="/" element={<HomePage />} />
+                            <Route exact path="/login" element={<Login />} />
+                        </Routes>
+                </BrowserRouter>
             </div>
         )
     }
