@@ -1,14 +1,7 @@
 import React, { Component, useState, useEffect } from "react";
 import { Container, Form, Button, Nav } from 'react-bootstrap';
-import { Navigate, useNavigate } from 'react-router-dom';
-
-
-
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 
 function Login() {
@@ -23,7 +16,7 @@ function Login() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie("csrftoken") // Assuming getCookie is defined elsewhere
+                    'X-CSRFToken': Cookies.get("csrftoken")
                 },
                 body: JSON.stringify({
                     username: username,
@@ -46,6 +39,7 @@ function Login() {
 
     useEffect(() => {
         if (shouldRedirect) {
+            Cookies.set('username', username, { expires: Infinity });
             navigate('/'); // Redirect to home page on successful creation
         }
     }, [shouldRedirect]);

@@ -21,8 +21,9 @@ export default class App extends Component {
     render() {
         return (
             <div>
-                <Defaultnavbar />
+
                 <BrowserRouter>
+                <Defaultnavbar />
                         <Routes>
                             <Route exact path="/" element={<HomePage />} />
                             <Route exact path="/login" element={<Login />} />
