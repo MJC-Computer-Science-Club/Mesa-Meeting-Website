@@ -9,7 +9,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or created
     """
-    queryset = User.objects.all().order_by("-first_name")
+    queryset = User.objects.all().order_by("-email")
     serializer_class = UserSerializer
     # permission_classes = [permissions.IsAuthenticated]
     

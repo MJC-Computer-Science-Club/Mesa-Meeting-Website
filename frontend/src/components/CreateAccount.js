@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 
 
 function CreateAccount() {
+    const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [shouldRedirect, setShouldRedirect] = useState(false);
@@ -19,7 +20,9 @@ function CreateAccount() {
                     'X-CSRFToken': Cookies.get("csrftoken")
                 },
                 body: JSON.stringify({
+                    email: email,
                     username: username,
+                    password: password,
                     first_name: password,
                     bio: 'This is a new user'
                 })
@@ -47,13 +50,23 @@ function CreateAccount() {
     return (
         <Container className="d-flex justify-content-center align-items-center mt-5">
             <div className="login-container p-4 shadow">
-                <h2 className="text-center mb-4">Login</h2>
+                <h2 className="text-center mb-4">Create Account</h2>
                 <Form>
-                    <Form.Group className="mb-3" controlId="formUsername">
+                    <Form.Group className="mb-3" controlId="formEmail">
                         <Form.Label>Email</Form.Label>
                         <Form.Control
                             type="text"
                             placeholder="Enter your email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="formUsername">
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter your username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                         />
