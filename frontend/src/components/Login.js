@@ -10,8 +10,31 @@ function Login() {
     const [shouldRedirect, setShouldRedirect] = useState(false);
     const navigate = useNavigate();
 
-    const handleOnClick = () => {
-        navigate('/account-creation')
+    const handleOnClick = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/users/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': Cookies.get("csrftoken")
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password,
+                    bio: 'This is a new user'
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error creating user: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log('User created successfully:', data);
+            setShouldRedirect(true);
+        } catch (error) {
+            console.error('Error creating user:', error);
+        }
     };
 
     useEffect(() => {

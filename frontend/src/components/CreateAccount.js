@@ -11,7 +11,12 @@ function CreateAccount() {
     const [shouldRedirect, setShouldRedirect] = useState(false);
     const navigate = useNavigate();
 
+    const cancelAccountCreation = () => {
+        navigate("/login")
+    };
+
     const handleOnClick = async () => {
+        console.log("Cookie")
         try {
             const response = await fetch('http://127.0.0.1:8000/users/', {
                 method: 'POST',
@@ -20,11 +25,10 @@ function CreateAccount() {
                     'X-CSRFToken': Cookies.get("csrftoken")
                 },
                 body: JSON.stringify({
-                    email: email,
-                    username: username,
-                    password: password,
-                    first_name: password,
-                    bio: 'This is a new user'
+                    email: username,
+                    username: password,
+                    password: "sdf",
+                    bio: "sdf"
                 })
             });
 
@@ -81,14 +85,14 @@ function CreateAccount() {
                             onChange={(e) => setPassword(e.target.value)} />
                     </Form.Group>
 
-                    <Button variant="primary" type="submit" className="w-100">
-                        Login
+                    <Button variant="primary" type="submit" className="w-100" onClick={handleOnClick}>
+                        Create Account
                     </Button>
                 </Form>
-                <p className="mt-3 text-center"> Or Create an Account</p>
+                <p className="mt-3 text-center"> Changed your mind?</p>
                 <div className=" d-flex align-items-center justify-content-center">
-                    <Button variant="outline-secondary" type="submit" className="w-50" onClick={handleOnClick}>
-                        Create Account
+                    <Button variant="outline-secondary" type="submit" className="w-50" onClick={cancelAccountCreation}>
+                        Cancel
                     </Button>
                 </div>
             </div>
