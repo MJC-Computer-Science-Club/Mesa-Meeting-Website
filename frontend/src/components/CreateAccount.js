@@ -17,7 +17,7 @@ function CreateAccount() {
 
     const handleOnClick = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/users/', {
+            const response = await fetch('http://127.0.0.1:8000/account_creation/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -27,7 +27,6 @@ function CreateAccount() {
                     email: email,
                     username: username,
                     password: password,
-                    bio: "No Bio"
                 })
             });
 
@@ -37,6 +36,7 @@ function CreateAccount() {
 
             const data = await response.json();
             console.log('User created successfully:', data);
+            Cookies.set("token", data.token)
             setShouldRedirect(true);
         } catch (error) {
             console.error('Error creating user:', error);

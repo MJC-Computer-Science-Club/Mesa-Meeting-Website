@@ -20,16 +20,20 @@ from django.contrib import admin
 from django.urls import path, include
 from homepage import views as homepageViews
 from rest import views as restViews
+from django.urls import re_path
+from rest import views
 
 router = routers.DefaultRouter()
-router.register(r'users', restViews.UserViewSet)
+# router.register(r'users', restViews.UserViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path("", homepageViews.index, name="index"),
     path("rest/", include(router.urls)),
     path('api_auth/', include("rest_framework.urls", namespace="rest_framework")),
-    path("", include("frontend.urls"))
+    path("", include("frontend.urls")),
+    re_path("account_creation/", views.signup),
+    re_path("login/", views.login),
 ]
 
 urlpatterns += router.urls

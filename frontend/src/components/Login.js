@@ -11,8 +11,35 @@ function Login() {
     const navigate = useNavigate();
 
     const handleOnClick = async () => {
-        navigate("/account-creation")
+        try {
+            const response = await fetch('http://127.0.0.1:8000/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': Cookies.get("csrftoken")
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password,
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error logging in user: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log('Successfully logged in:', data);
+            Cookies.set("token", data.token)
+            setShouldRedirect(true);
+        } catch (error) {
+            console.error('Successfully logged in:', error);
+        }
     };
+
+    const navigateToCreation = async () => {
+        navigate("../account-creation")
+    }
 
     useEffect(() => {
         if (shouldRedirect) {
@@ -45,12 +72,12 @@ function Login() {
                             onChange={(e) => setPassword(e.target.value)} />
                     </Form.Group>
                 </Form>
-                <Button variant="primary" type="submit" className="w-100">
+                <Button variant="primary" type="submit" className="w-100" onClick={handleOnClick}>
                         Login
                     </Button>
                 <p className="mt-3 text-center"> Or Create an Account</p>
                 <div className=" d-flex align-items-center justify-content-center">
-                    <Button variant="outline-secondary" type="submit" className="w-50" onClick={handleOnClick}>
+                    <Button variant="outline-secondary" type="submit" className="w-50" onClick={navigateToCreation}>
                         Create Account
                     </Button>
                 </div>

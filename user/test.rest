@@ -1,0 +1,11 @@
+POST http://127.0.0.1:8000/account_creation/
+Content-Type: application/json
+
+{"username": "lucasboy123231341", "password": "Pass1234!", "email": "lucaslassiter@protonmail.com"}
+
+###
+
+POST http://127.0.0.1:8000/login/
+Content-Type: application/json
+
+{"username": "lucas", "password": "moontoot"}
