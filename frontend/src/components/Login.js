@@ -1,14 +1,7 @@
 import React, { Component, useState, useEffect } from "react";
 import { Container, Form, Button, Nav } from 'react-bootstrap';
-import { Navigate, useNavigate } from 'react-router-dom';
-
-
-
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 
 function Login() {
@@ -19,33 +12,38 @@ function Login() {
 
     const handleOnClick = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/users/', {
+            const response = await fetch('http://127.0.0.1:8000/login/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie("csrftoken") // Assuming getCookie is defined elsewhere
+                    'X-CSRFToken': Cookies.get("csrftoken")
                 },
                 body: JSON.stringify({
                     username: username,
-                    first_name: password,
-                    bio: 'This is a new user'
+                    password: password,
                 })
             });
 
             if (!response.ok) {
-                throw new Error(`Error creating user: ${response.statusText}`);
+                throw new Error(`Error logging in user: ${response.statusText}`);
             }
 
             const data = await response.json();
-            console.log('User created successfully:', data);
+            console.log('Successfully logged in:', data);
+            Cookies.set("token", data.token)
             setShouldRedirect(true);
         } catch (error) {
-            console.error('Error creating user:', error);
+            console.error('Successfully logged in:', error);
         }
     };
 
+    const navigateToCreation = async () => {
+        navigate("../account-creation")
+    }
+
     useEffect(() => {
         if (shouldRedirect) {
+            Cookies.set('username', username, { expires: Infinity });
             navigate('/'); // Redirect to home page on successful creation
         }
     }, [shouldRedirect]);
@@ -73,14 +71,13 @@ function Login() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)} />
                     </Form.Group>
-
-                    <Button variant="primary" type="submit" className="w-100">
+                </Form>
+                <Button variant="primary" type="submit" className="w-100" onClick={handleOnClick}>
                         Login
                     </Button>
-                </Form>
                 <p className="mt-3 text-center"> Or Create an Account</p>
                 <div className=" d-flex align-items-center justify-content-center">
-                    <Button variant="outline-secondary" type="submit" className="w-50" onClick={handleOnClick}>
+                    <Button variant="outline-secondary" type="submit" className="w-50" onClick={navigateToCreation}>
                         Create Account
                     </Button>
                 </div>

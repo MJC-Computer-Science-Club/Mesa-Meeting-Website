@@ -8,6 +8,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Defaultnavbar from "./Defaultnavbar";
 import { BrowserRouter as Router, Routes, Route, Link, Redirect, BrowserRouter } from "react-router-dom";
 import Login from "./Login"
+import CreateAccount from "./CreateAccount";
 
 // Images
 import stupid_pic from "../../static/images/stupid_pic.png"
@@ -21,11 +22,13 @@ export default class App extends Component {
     render() {
         return (
             <div>
-                <Defaultnavbar />
+
                 <BrowserRouter>
+                <Defaultnavbar />
                         <Routes>
                             <Route exact path="/" element={<HomePage />} />
                             <Route exact path="/login" element={<Login />} />
+                            <Route exact path="/account-creation" element={<CreateAccount />} />
                         </Routes>
                 </BrowserRouter>
             </div>
