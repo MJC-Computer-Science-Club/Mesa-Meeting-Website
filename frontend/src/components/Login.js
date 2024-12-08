@@ -11,30 +11,7 @@ function Login() {
     const navigate = useNavigate();
 
     const handleOnClick = async () => {
-        try {
-            const response = await fetch('http://127.0.0.1:8000/users/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': Cookies.get("csrftoken")
-                },
-                body: JSON.stringify({
-                    username: username,
-                    password: password,
-                    bio: 'This is a new user'
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`Error creating user: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            console.log('User created successfully:', data);
-            setShouldRedirect(true);
-        } catch (error) {
-            console.error('Error creating user:', error);
-        }
+        navigate("/account-creation")
     };
 
     useEffect(() => {
@@ -67,11 +44,10 @@ function Login() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)} />
                     </Form.Group>
-
-                    <Button variant="primary" type="submit" className="w-100">
+                </Form>
+                <Button variant="primary" type="submit" className="w-100">
                         Login
                     </Button>
-                </Form>
                 <p className="mt-3 text-center"> Or Create an Account</p>
                 <div className=" d-flex align-items-center justify-content-center">
                     <Button variant="outline-secondary" type="submit" className="w-50" onClick={handleOnClick}>
