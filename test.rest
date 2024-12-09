@@ -1,0 +1,12 @@
+POST http://127.0.0.1:8000/login/
+Content-Type: application/json
+
+{"username": "lucas", "password": "moontoot"}
+
+###
+
+GET http://127.0.0.1:8000/gethubs/
+Content-Type: application/json
+Authorization: Token d874c08c0361a4b74c771fcbe8226e514bab0862
+
+{}

@@ -1,6 +1,6 @@
 # from user.models import User
 from django.contrib.auth.models import User
-from hub.models import Hub
+from hub.models import Hub, HubMembership
 from rest_framework import serializers
 
 # class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -17,3 +17,12 @@ class HubSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Hub
         fields = ["id", "name"]
+
+class HubMembershipSerializer(serializers.ModelSerializer):
+
+    hub = serializers.StringRelatedField()
+    user = serializers.StringRelatedField()
+
+    class Meta(object):
+        model = HubMembership
+        fields = ["hub", "user"]
