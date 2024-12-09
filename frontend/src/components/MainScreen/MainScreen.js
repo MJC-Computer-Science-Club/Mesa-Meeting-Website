@@ -11,8 +11,9 @@ export default function MainScreen() {
     const [tempMessage, setTempMessage] = useState("");
 
     const handleSendMessage = () => {
+
         if (tempMessage.trim()) {
-            onSendMessage(tempMessage);
+            // onSendMessage(tempMessage);
             setMessage(""); // Clear input after sending
         }
     };
@@ -30,9 +31,40 @@ export default function MainScreen() {
         return result;
     }
 
+    const sendMessage = async (hId) => {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/postMessage/', { // Replace with your actual API endpoint
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': Cookies.get("csrftoken"),
+                    'Authorization': `Token ${Cookies.get("token")}`, // Assuming you store the token in localStorage
+                },
+                body: JSON.stringify({
+                    "hub": currentHubName,
+                    "content": tempMessage,
+                    "user": Cookies.get("username"),
+                    "created_at": "0"
+
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error fetching user hub 1: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log(data);
+            setTempMessage("");
+        } catch (error) {
+            console.error('Error fetching user hub:', error);
+        }
+    };
+
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
-            handleSendMessage();
+            sendMessage();
+            setTempMessage("");
         }
     };
 
@@ -100,9 +132,9 @@ export default function MainScreen() {
                 <h1>{currentHubName}</h1>
                 <div className="hub-messages">
                     {messages.map((message) => (
-                        <div key={message.id}>
-                            <p>{message.user}</p>
-                            <p>{message.content}</p>
+                        <div className="message" key={message.id}>
+                            <p className="message-user">{message.user}</p>
+                            <p className="message-content">{message.content}</p>
                         </div>
                     ))}
                 </div>
@@ -115,7 +147,7 @@ export default function MainScreen() {
                         onChange={(e) => setTempMessage(e.target.value)}
                         onKeyDown={handleKeyDown}
                     />
-                    <button className="send-button" onClick={handleSendMessage}>
+                    <button className="send-button" onClick={sendMessage}>
                         Send
                     </button>
                 </div>

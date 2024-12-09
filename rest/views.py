@@ -58,10 +58,10 @@ def list_user_hubs(request):
     # Filter hubs where the user is a member
     user_hubs = HubMembership.objects.filter(user=request.user)
 
-    print(user_hubs)
+    # print(user_hubs)
     # Serialize the list of hubs
     serializer = HubMembershipSerializer(user_hubs, many=True)
-    print(serializer)
+    # print(serializer)
 
     # Return the serialized data
     return Response(serializer.data)
@@ -70,24 +70,30 @@ def list_user_hubs(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def list_specific_hub(request):
-    print("Got request")
-    print(f"HERE {request.data["name"]}")
     # Filter hubs where the user is a member
     user_hubs = Hub.objects.get(name=request.data["name"])
 
-    print(f"Quuery result: {user_hubs}")
     messages = user_hubs.messages.all().order_by('created_at')
-    print(messages)
+
     # Serialize the list of hubs
     serializer = HubSerializer(user_hubs)
     messageSerializer = MessageSerializer(messages, many=True)
-    print(f"Messages: {messageSerializer.data}")
-    print(f"Passed serializer: {serializer.data}")
-    print(f"Message serializer {messageSerializer.data}")
-    print("Nice")
 
     # Return the serialized data    
     return Response({
         "hub": serializer.data,
         "messages": messageSerializer.data
     })
+
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def post_Message_To_Hub(request):
+    serializer = MessageSerializer(data = request.data)
+    if serializer.is_valid():
+
+        serializer.save()
+        print(serializer.data)
+        return Response({"message": serializer.data})
+    print("Failed")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
