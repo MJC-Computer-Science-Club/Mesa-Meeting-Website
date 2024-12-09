@@ -6,6 +6,20 @@ export default function MainScreen() {
 
     const navigate = useNavigate();
     const [hubs, setHubs] = useState([]);
+    const [currentHubName, setCurrentHubName] = useState("")
+
+    function removeHub(inputString) {
+        // Split the string by ' '
+        const words = inputString.split(' ');
+      
+        // Remove the first word (the 'hub' part)
+        words.pop();
+      
+        // Join the remaining words back into a string
+        const result = words.join(' ');
+      
+        return result;
+      }
 
     const fetchUserHubs = async () => {
         try {
@@ -13,7 +27,7 @@ export default function MainScreen() {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': Cookies.get("csrftoken"),
-                    'Authorization': `Token ${Cookies.get("token")}` // Assuming you store the token in localStorage
+                    'Authorization': `Token ${Cookies.get("token")}`, // Assuming you store the token in localStorage
                 }
             });
 
@@ -29,8 +43,32 @@ export default function MainScreen() {
         }
     };
 
+    const fetchSpecificHub = async (hId) => {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/getspecifichub/', { // Replace with your actual API endpoint
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': Cookies.get("csrftoken"),
+                    'Authorization': `Token ${Cookies.get("token")}`, // Assuming you store the token in localStorage
+                },
+                body: JSON.stringify({ "name": removeHub(hId) })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error fetching user hub 1: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log(data);
+            setCurrentHubName(data.name[0]["name"]);
+            // setHubs(data);
+        } catch (error) {
+            console.error('Error fetching user hub:', error);
+        }
+    };
+
     useEffect(() => {
-        console.log("Hello");
         if (Cookies.get("username") === undefined) {
             console.log("Navigate");
             navigate('/homepage');
@@ -42,13 +80,16 @@ export default function MainScreen() {
 
     return (
         <div>
+            <h1 className='hub-content'>{currentHubName}</h1>
             {/* Check if username cookie exists */}
             {Cookies.get("username") !== undefined && (
                 <>
                     {/* Render hubs if cookie exists */}
-                    {hubs.map(hub => (
-                        <h1 key={hub.id}>{hub.hub}</h1>
-                    ))}
+                    <aside>
+                        {hubs.map(hub => (
+                            <p onClick={() => fetchSpecificHub(hub.hub)} key={hub.id}>{hub.hub}</p>
+                        ))}
+                    </aside>
                 </>
             )}
         </div>)

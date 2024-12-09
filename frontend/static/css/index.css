@@ -1,81 +1,110 @@
 :root {
-    --black: #050316;
-    --background: #bbe2c5;
-    --primary: #7fd781;
-    --secondary: #eeeed3;
-    --accent: #ac552a;
-    --soft-lavender: #a29bfe;
-    --light-blue: #74b9ff;
-  }
+  --black: #050316;
+  --background: #bbe2c5;
+  --primary: #7fd781;
+  --secondary: #eeeed3;
+  --accent: #ac552a;
+  --soft-lavender: #a29bfe;
+  --light-blue: #74b9ff;
+}
 
 body {
-    background-color: var(--background);
-    background: linear-gradient(to right, var(--soft-lavender), var(--light-blue));
-    color: #fff; /* Adjust text color accordingly */
+  background-color: var(--background);
+  background: linear-gradient(to right, var(--soft-lavender), var(--light-blue));
+  color: #fff;
+  /* Adjust text color accordingly */
 }
 
 img {
-    width: 100px;
+  width: 100px;
 }
 
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .login-container {
-    background-color: #fff;
-    border-radius: 8px;
-    max-width: 400px;
-    width: 100%;
-    color: black;
+  background-color: #fff;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+  color: black;
 }
 
 /* src/components/HeroSection.css */
 
 .hero-section {
-    padding: 75px 0;
-    height: 100vh;
-  }
-  
-  .hero-content-container {
-    background: #fff;
-    color: black;
-    border: 2px solid #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center; /* Center content horizontally */
-    align-items: center; /* Center content vertically */
-  }
-  
-  .hero-content {
-    text-align: left;
-    max-width: 500px;
-    padding: 20px;
-  }
-  
-  .hero-image {
-    flex: 1;
-  }
-  
-  /* Rest of your styles remain unchanged */
-  .hero-content button {
-    font-size: 1.2rem;
-    padding: 10px 20px;
-    margin-top: 2em;
-    margin-left: auto; /* Adjust the margin as needed */
-    margin-right: auto; /* Adjust the margin as needed */
-    display: block; /* Make it a block element for auto margins to work */
-  }
-  
-  
-  .hero-image-col {
-    flex: 1; /* Allow the image to take remaining space */
-  }
+  padding: 75px 0;
+  height: 100vh;
+}
 
-  .hero-image {
-    width: 300px;
-  }
+.hero-content-container {
+  background: #fff;
+  color: black;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  /* Center content horizontally */
+  align-items: center;
+  /* Center content vertically */
+}
 
-   
+.hero-content {
+  text-align: left;
+  max-width: 500px;
+  padding: 20px;
+}
+
+.hero-image {
+  flex: 1;
+}
+
+/* Rest of your styles remain unchanged */
+.hero-content button {
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  margin-top: 2em;
+  margin-left: auto;
+  /* Adjust the margin as needed */
+  margin-right: auto;
+  /* Adjust the margin as needed */
+  display: block;
+  /* Make it a block element for auto margins to work */
+}
+
+
+.hero-image-col {
+  flex: 1;
+  /* Allow the image to take remaining space */
+}
+
+.hero-image {
+  width: 300px;
+}
+
+aside {
+  position: fixed;
+  left: 0;
+  top: 72px;
+  bottom: 0px;
+  padding: 10px;
+  background-color: #212529;
+  width: 100px;
+}
+
+.hub-content {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+@media screen and (max-width: 800px) {
+  .hub-content {
+    margin-left: 100px;
+  }
+}

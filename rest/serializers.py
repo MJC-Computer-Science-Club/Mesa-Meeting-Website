@@ -14,6 +14,9 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "password", "email"]
 
 class HubSerializer(serializers.ModelSerializer):
+
+    name = serializers.StringRelatedField()
+
     class Meta(object):
         model = Hub
         fields = ["id", "name"]

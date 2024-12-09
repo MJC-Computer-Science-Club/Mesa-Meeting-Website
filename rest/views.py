@@ -66,17 +66,20 @@ def list_user_hubs(request):
     # Return the serialized data
     return Response(serializer.data)
 
-@api_view(['GET'])
+@api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def list_specific_hub(request):
+    print("Got request")
+    print(f"HERE {request.data["name"]}")
     # Filter hubs where the user is a member
-    user_hubs = Hub.objects.filter(user=request.hub)
+    user_hubs = Hub.objects.filter(name=request.data["name"])
 
-    print(user_hubs)
+    print(f"Quuery result: {user_hubs}")
     # Serialize the list of hubs
-    serializer = HubSerializer(user_hubs)
-    print(serializer)
+    serializer = HubSerializer(user_hubs, many=True)
+    print(f"Passed serializer: {serializer.data}")
+    print("Nice")
 
-    # Return the serialized data
-    return Response(serializer.data)
+    # Return the serialized data    
+    return Response({"name": serializer.data})
