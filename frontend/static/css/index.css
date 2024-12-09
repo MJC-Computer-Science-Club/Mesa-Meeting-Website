@@ -24,6 +24,11 @@ a {
   text-decoration: none;
 }
 
+.navbar {
+  position: fixed;
+  width: 100%;
+}
+
 .login-container {
   background-color: #fff;
   border-radius: 8px;
@@ -101,10 +106,87 @@ aside {
   display: flex;
   flex-direction: column;
   gap: 15px;
+
+  height: 100vh; /* Full viewport height */
+  overflow: hidden; /* Prevents content from overflowing */
 }
 
 @media screen and (max-width: 800px) {
   .hub-content {
     margin-left: 100px;
+  }
+}
+
+/* General styling for the message bar */
+.message-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #212529;
+  border-top: 1px solid #23272a;
+
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+
+/* Input field styling */
+.message-input {
+  flex-grow: 1;
+  padding: 10px;
+  margin-right: 10px;
+  font-size: 16px;
+  border: 1px solid #40444b;
+  border-radius: 5px;
+  background-color: #40444b;
+  color: white;
+  outline: none;
+}
+
+/* Placeholder color for input */
+.message-input::placeholder {
+  color: #b9bbbe;
+}
+
+/* Send button styling */
+.send-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  color: white;
+  background-color: #5865f2; /* Discord-like blue */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.send-button:hover {
+  background-color: #4752c4; /* Darker shade on hover */
+}
+
+.send-button:active {
+  background-color: #3c45a5; /* Even darker shade on click */
+}
+
+/* Scrollable messages area */
+.hub-messages {
+  flex-grow: 1; /* Fills remaining space */
+  overflow-y: auto; /* Makes this section scrollable */
+  padding: 10px;
+}
+
+/* Adjustments for small screens */
+@media (max-width: 800px) {
+  .message-bar {
+      padding: 8px;
+  }
+
+  .message-input {
+      font-size: 14px;
+  }
+
+  .send-button {
+      font-size: 14px;
+      padding: 8px 12px;
   }
 }

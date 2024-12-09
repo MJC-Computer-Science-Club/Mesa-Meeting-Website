@@ -7,19 +7,34 @@ export default function MainScreen() {
     const navigate = useNavigate();
     const [hubs, setHubs] = useState([]);
     const [currentHubName, setCurrentHubName] = useState("")
+    const [messages, setMessages] = useState([]);
+    const [tempMessage, setTempMessage] = useState("");
+
+    const handleSendMessage = () => {
+        if (tempMessage.trim()) {
+            onSendMessage(tempMessage);
+            setMessage(""); // Clear input after sending
+        }
+    };
 
     function removeHub(inputString) {
         // Split the string by ' '
         const words = inputString.split(' ');
-      
+
         // Remove the first word (the 'hub' part)
         words.pop();
-      
+
         // Join the remaining words back into a string
         const result = words.join(' ');
-      
+
         return result;
-      }
+    }
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            handleSendMessage();
+        }
+    };
 
     const fetchUserHubs = async () => {
         try {
@@ -61,8 +76,9 @@ export default function MainScreen() {
 
             const data = await response.json();
             console.log(data);
-            setCurrentHubName(data.name[0]["name"]);
-            // setHubs(data);
+            setCurrentHubName(data.hub["name"]);
+            setMessages(data.messages)
+            console.log(messages)
         } catch (error) {
             console.error('Error fetching user hub:', error);
         }
@@ -80,7 +96,30 @@ export default function MainScreen() {
 
     return (
         <div>
-            <h1 className='hub-content'>{currentHubName}</h1>
+            <div className="hub-content">
+                <h1>{currentHubName}</h1>
+                <div className="hub-messages">
+                    {messages.map((message) => (
+                        <div key={message.id}>
+                            <p>{message.user}</p>
+                            <p>{message.content}</p>
+                        </div>
+                    ))}
+                </div>
+                <div className="message-bar">
+                    <input
+                        type="text"
+                        className="message-input"
+                        placeholder="Type your message here..."
+                        value={tempMessage}
+                        onChange={(e) => setTempMessage(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                    />
+                    <button className="send-button" onClick={handleSendMessage}>
+                        Send
+                    </button>
+                </div>
+            </div>
             {/* Check if username cookie exists */}
             {Cookies.get("username") !== undefined && (
                 <>
