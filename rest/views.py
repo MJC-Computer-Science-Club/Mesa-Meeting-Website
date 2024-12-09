@@ -1,11 +1,9 @@
 from django.shortcuts import render
 from rest_framework import permissions, viewsets
-from rest.serializers import UserSerializer
+from rest.serializers import UserSerializer, HubSerializer
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from hub.models import Hub
-from serializers import HubSerializer
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -51,6 +49,7 @@ def login(request):
     serializer = UserSerializer(instance=user)
     return Response({"token": token.key, "user": serializer.data})
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])  # Ensure only authenticated users can access this endpoint
 def list_user_hubs(request):
@@ -58,7 +57,7 @@ def list_user_hubs(request):
     user_hubs = Hub.objects.filter(members=request.user)
 
     # Serialize the list of hubs
-    serializer = HubSerializer(user_hubs, many=True)
+    serializer = serializers.HubSerializer(user_hubs, many=True)
 
     # Return the serialized data
     return Response(serializer.data)
