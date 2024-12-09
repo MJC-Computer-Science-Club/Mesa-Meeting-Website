@@ -1,13 +1,16 @@
 from django.shortcuts import render
 from rest_framework import permissions, viewsets
-from rest.serializers import UserSerializer
+from rest.serializers import UserSerializer, HubSerializer, HubMembershipSerializer, MessageSerializer
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+from hub.models import Hub, HubMembership, Message
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -47,3 +50,44 @@ def login(request):
     token, created = Token.objects.get_or_create(user=user)
     serializer = UserSerializer(instance=user)
     return Response({"token": token.key, "user": serializer.data})
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def list_user_hubs(request):
+    # Filter hubs where the user is a member
+    user_hubs = HubMembership.objects.filter(user=request.user)
+
+    print(user_hubs)
+    # Serialize the list of hubs
+    serializer = HubMembershipSerializer(user_hubs, many=True)
+    print(serializer)
+
+    # Return the serialized data
+    return Response(serializer.data)
+
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def list_specific_hub(request):
+    print("Got request")
+    print(f"HERE {request.data["name"]}")
+    # Filter hubs where the user is a member
+    user_hubs = Hub.objects.get(name=request.data["name"])
+
+    print(f"Quuery result: {user_hubs}")
+    messages = user_hubs.messages.all().order_by('created_at')
+    print(messages)
+    # Serialize the list of hubs
+    serializer = HubSerializer(user_hubs)
+    messageSerializer = MessageSerializer(messages, many=True)
+    print(f"Messages: {messageSerializer.data}")
+    print(f"Passed serializer: {serializer.data}")
+    print(f"Message serializer {messageSerializer.data}")
+    print("Nice")
+
+    # Return the serialized data    
+    return Response({
+        "hub": serializer.data,
+        "messages": messageSerializer.data
+    })

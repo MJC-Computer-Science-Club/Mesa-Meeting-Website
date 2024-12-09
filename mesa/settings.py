@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     # Own
     "homepage",
     "frontend.apps.FrontendConfig",
-    "user",
     "rest",
+    "hub",
 ]
 
 MIDDLEWARE = [

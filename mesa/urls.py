@@ -34,6 +34,8 @@ urlpatterns = [
     path("", include("frontend.urls")),
     re_path("account_creation/", views.signup),
     re_path("login/", views.login),
+    re_path("gethubs", views.list_user_hubs),
+    re_path("getspecifichub", views.list_specific_hub),
 ]
 
 urlpatterns += router.urls
