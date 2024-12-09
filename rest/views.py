@@ -4,10 +4,13 @@ from rest.serializers import UserSerializer
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+from hub.models import Hub
+from serializers import HubSerializer
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -47,3 +50,15 @@ def login(request):
     token, created = Token.objects.get_or_create(user=user)
     serializer = UserSerializer(instance=user)
     return Response({"token": token.key, "user": serializer.data})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  # Ensure only authenticated users can access this endpoint
+def list_user_hubs(request):
+    # Filter hubs where the user is a member
+    user_hubs = Hub.objects.filter(members=request.user)
+
+    # Serialize the list of hubs
+    serializer = HubSerializer(user_hubs, many=True)
+
+    # Return the serialized data
+    return Response(serializer.data)
