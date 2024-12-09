@@ -56,7 +56,6 @@ def login(request):
 @permission_classes([IsAuthenticated])
 def list_user_hubs(request):
     # Filter hubs where the user is a member
-    print("first")
     user_hubs = HubMembership.objects.filter(user=request.user)
 
     print(user_hubs)
@@ -66,4 +65,18 @@ def list_user_hubs(request):
 
     # Return the serialized data
     return Response(serializer.data)
-    # return Response("passed! for {}".format(request.user.email))
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def list_specific_hub(request):
+    # Filter hubs where the user is a member
+    user_hubs = Hub.objects.filter(user=request.hub)
+
+    print(user_hubs)
+    # Serialize the list of hubs
+    serializer = HubSerializer(user_hubs)
+    print(serializer)
+
+    # Return the serialized data
+    return Response(serializer.data)

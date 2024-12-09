@@ -22,6 +22,7 @@ export default function MainScreen() {
             }
 
             const data = await response.json();
+            console.log(data)
             setHubs(data);
         } catch (error) {
             console.error('Error fetching user hubs:', error);
