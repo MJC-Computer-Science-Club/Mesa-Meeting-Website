@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "frontend.apps.FrontendConfig",
     "user",
     "rest",
+    "hub",
 ]
 
 MIDDLEWARE = [

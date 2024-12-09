@@ -13,6 +13,7 @@ import CreateAccount from "./CreateAccount";
 // Images
 import stupid_pic from "../../static/images/stupid_pic.png"
 import HomePage from "./HomePage";
+import MainScreen from "./MainScreen/MainScreen";
 
 export default class App extends Component {
     constructor(props) {
@@ -26,9 +27,10 @@ export default class App extends Component {
                 <BrowserRouter>
                 <Defaultnavbar />
                         <Routes>
-                            <Route exact path="/" element={<HomePage />} />
+                            <Route exact path="/homepage" element={<HomePage />} />
                             <Route exact path="/login" element={<Login />} />
                             <Route exact path="/account-creation" element={<CreateAccount />} />
+                            <Route exact path="/" element={<MainScreen />} />
                         </Routes>
                 </BrowserRouter>
             </div>
