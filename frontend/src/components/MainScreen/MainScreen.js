@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 export default function MainScreen() {
 
@@ -9,6 +9,10 @@ export default function MainScreen() {
     const [currentHubName, setCurrentHubName] = useState("")
     const [messages, setMessages] = useState([]);
     const [tempMessage, setTempMessage] = useState("");
+
+    const wsRef = useRef(null);
+
+    let url = `ws://127.0.0.1:8000/ws/hub/Math/`;
 
     const handleSendMessage = () => {
 
@@ -32,33 +36,40 @@ export default function MainScreen() {
     }
 
     const sendMessage = async (hId) => {
-        try {
-            const response = await fetch('http://127.0.0.1:8000/postMessage/', { // Replace with your actual API endpoint
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': Cookies.get("csrftoken"),
-                    'Authorization': `Token ${Cookies.get("token")}`, // Assuming you store the token in localStorage
-                },
-                body: JSON.stringify({
-                    "hub": currentHubName,
-                    "content": tempMessage,
-                    "user": Cookies.get("username"),
-                    "created_at": "0"
+        // try {
+        //     const response = await fetch('http://127.0.0.1:8000/postMessage/', { // Replace with your actual API endpoint
+        //         method: "POST",
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'X-CSRFToken': Cookies.get("csrftoken"),
+        //             'Authorization': `Token ${Cookies.get("token")}`, // Assuming you store the token in localStorage
+        //         },
+        //         body: JSON.stringify({
+        //             "hub": currentHubName,
+        //             "content": tempMessage,
+        //             "user": Cookies.get("username"),
+        //             "created_at": "0"
 
-                })
-            });
+        //         })
+        //     });
 
-            if (!response.ok) {
-                throw new Error(`Error fetching user hub 1: ${response.statusText}`);
-            }
+        //     if (!response.ok) {
+        //         throw new Error(`Error fetching user hub 1: ${response.statusText}`);
+        //     }
 
-            const data = await response.json();
-            console.log(data);
-            setTempMessage("");
-        } catch (error) {
-            console.error('Error fetching user hub:', error);
-        }
+        //     const data = await response.json();
+        //     console.log(data);
+        //     setTempMessage("");
+        // } catch (error) {
+        //     console.error('Error fetching user hub:', error);
+        // }
+        wsRef.current.send(JSON.stringify({
+            "hub": currentHubName,
+            "content": tempMessage,
+            "user": Cookies.get("username"),
+            "created_at": "0"
+        }))
+        setTempMessage("");
     };
 
     const handleKeyDown = (e) => {
@@ -109,6 +120,7 @@ export default function MainScreen() {
             const data = await response.json();
             console.log(data);
             setCurrentHubName(data.hub["name"]);
+            url = `ws://127.0.0.1:8000/ws/hub/${encodeURIComponent(currentHubName)}/`;
             setMessages(data.messages)
             console.log(messages)
         } catch (error) {
@@ -117,6 +129,24 @@ export default function MainScreen() {
     };
 
     useEffect(() => {
+        const ws = new WebSocket(url, [], {
+            headers: {
+              Authorization: `Token ${Cookies.get("token")}}`,
+            },
+          });
+
+          console.log(ws);
+
+        wsRef.current = ws;
+
+        ws.onmessage = function (e) {
+            let data = JSON.parse(e.data);
+            console.log("Data:", data);
+            console.log(messages);
+            setMessages((prevMessages) => [...prevMessages, data]);
+            console.log(messages);
+        }
+
         if (Cookies.get("username") === undefined) {
             console.log("Navigate");
             navigate('/homepage');

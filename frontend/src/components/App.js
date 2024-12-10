@@ -14,6 +14,7 @@ import CreateAccount from "./CreateAccount";
 import stupid_pic from "../../static/images/stupid_pic.png"
 import HomePage from "./HomePage";
 import MainScreen from "./MainScreen/MainScreen";
+import Chat from "./MainScreen/testmainscreen";
 
 export default class App extends Component {
     constructor(props) {

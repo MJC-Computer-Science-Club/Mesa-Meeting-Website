@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from hub.models import Hub, HubMembership, Message
+from django.contrib.auth import authenticate, login
 
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
@@ -42,11 +43,13 @@ def signup(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
-def login(request):
-    user = get_object_or_404(User, username=request.data['username'])
+def loginReq(request):
+    print(request.data)
+    user = authenticate(request, username=request.data['username'], password=request.data['password'])
     if not user.check_password(request.data['password']):
         return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
     
+    login(request, user)
     token, created = Token.objects.get_or_create(user=user)
     serializer = UserSerializer(instance=user)
     return Response({"token": token.key, "user": serializer.data})
