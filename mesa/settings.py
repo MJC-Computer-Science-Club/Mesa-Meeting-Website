@@ -33,6 +33,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "channels",
+
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -47,7 +49,10 @@ INSTALLED_APPS = [
     "frontend.apps.FrontendConfig",
     "rest",
     "hub",
+    "websocket",
 ]
+
+ASGI_APPLICATION = "mesa.asgi.application"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -58,6 +63,9 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+
 
 ROOT_URLCONF = "mesa.urls"
 
@@ -78,6 +86,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "mesa.wsgi.application"
+
+# Redis configuration for WebSocket communication
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],  # Replace with your Redis server details
+        },
+    },
+}
 
 
 # Database

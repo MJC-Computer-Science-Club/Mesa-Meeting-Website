@@ -105,7 +105,7 @@ aside {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 15px, 0;
 
   height: 100vh; /* Full viewport height */
   overflow: hidden; /* Prevents content from overflowing */
@@ -172,8 +172,73 @@ aside {
 .hub-messages {
   flex-grow: 1; /* Fills remaining space */
   overflow-y: auto; /* Makes this section scrollable */
-  padding: 10px;
+  padding: 15px;
+  background-color: #36393f; /* Discord-like background */
+  color: #ffffff; /* Default text color */
 }
+
+/* Individual message container */
+.message {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  background-color: #2f3136; /* Slightly darker than background */
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+}
+
+/* Hover effect for messages */
+.message:hover {
+  background-color: #3c3f45; /* Highlight on hover */
+}
+
+/* User's name styling */
+.message-user {
+  font-weight: bold;
+  color: #7289da; /* Discord-like blue for usernames */
+  margin-bottom: 4px; /* Space between username and message */
+  font-size: 14px;
+}
+
+/* Message content styling */
+.message-content {
+  color: #dcddde; /* Subtle off-white for message text */
+  font-size: 14px;
+  line-height: 1.4; /* Improve readability */
+  word-wrap: break-word; /* Handle long messages */
+}
+
+/* Scrollbar customization */
+.hub-messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.hub-messages::-webkit-scrollbar-thumb {
+  background-color: #202225; /* Subtle scrollbar */
+  border-radius: 4px;
+}
+
+.hub-messages::-webkit-scrollbar-thumb:hover {
+  background-color: #2c2f33; /* Slightly brighter on hover */
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 600px) {
+  .hub-messages {
+      padding: 10px;
+  }
+
+  .message {
+      padding: 6px 10px;
+  }
+
+  .message-user,
+  .message-content {
+      font-size: 13px;
+  }
+}
+
 
 /* Adjustments for small screens */
 @media (max-width: 800px) {

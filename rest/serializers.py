@@ -31,9 +31,10 @@ class HubMembershipSerializer(serializers.ModelSerializer):
         fields = ["hub", "user"]
 
 class MessageSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()  # Display the username of the sender
-    content = serializers.StringRelatedField()
+    user = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field='username')
+    hub = serializers.SlugRelatedField(queryset=Hub.objects.all(), slug_field='name')
+    content = serializers.CharField()
 
-    class Meta:
+    class Meta(object):
         model = Message
         fields = ['id', 'hub', 'user', 'content', 'created_at']
