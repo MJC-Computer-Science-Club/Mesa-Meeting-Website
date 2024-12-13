@@ -262,6 +262,8 @@ aside {
 .hub-messages {
   flex-grow: 1; /* Fills remaining space */
   overflow-y: auto; /* Makes this section scrollable */
+  display: flex;
+  flex-direction: column-reverse;
   padding: 15px;
   background-color: #36393f; /* Discord-like background */
   color: #ffffff; /* Default text color */
