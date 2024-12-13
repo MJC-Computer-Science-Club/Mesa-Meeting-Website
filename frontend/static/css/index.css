@@ -135,6 +135,7 @@ a {
 }
 
 .hero-content-container {
+  margin-top: 10%;
   background: #fff;
   color: black;
   border: 2px solid #fff;
