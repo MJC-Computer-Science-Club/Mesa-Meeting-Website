@@ -36,7 +36,7 @@ export default function MainScreen() {
 
     const sendMessage = async (hId) => {
         wsRef.current.send(JSON.stringify({
-            "hub": currentHubName,
+            "hubChannel": currentHubName,
             "content": tempMessage,
             "user": Cookies.get("username"),
             "created_at": "0"
@@ -66,7 +66,7 @@ export default function MainScreen() {
             }
 
             const data = await response.json();
-            console.log(data)
+            // console.log(data)
             setHubs(data);
             fetchSpecificHub(data[0].hub);
         } catch (error) {
@@ -91,13 +91,38 @@ export default function MainScreen() {
             }
 
             const data = await response.json();
-            console.log(data);
+            // console.log(data);
             setCurrentHubName(data.hub["name"]);
             url = `ws://127.0.0.1:8000/ws/hub/${encodeURIComponent(currentHubName)}/`;
-            setMessages(data.messages)
-            console.log(messages)
+            // setMessages(data.messages)
+            // console.log(messages)
         } catch (error) {
             console.error('Error fetching user hub:', error);
+        }
+    };
+
+    const fetchHubChannels = async (hId) => {
+        console.log("Channel thing");
+        console.log(currentHubName)
+        try {
+            const response = await fetch('http://127.0.0.1:8000/getHubChannels/', { // Replace with your actual API endpoint
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': Cookies.get("csrftoken"),
+                    'Authorization': `Token ${Cookies.get("token")}`, // Assuming you store the token in localStorage
+                },
+                body: JSON.stringify({ "hub": "Calculus 2" })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error fetching channel 1: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log("My data:", data);
+        } catch (error) {
+            console.error('Error fetching channel:', error);
         }
     };
 
@@ -114,17 +139,18 @@ export default function MainScreen() {
 
         ws.onmessage = function (e) {
             let data = JSON.parse(e.data);
-            console.log("Data:", data);
-            console.log(messages);
+            // console.log("Data:", data);
+            // console.log(messages);
             setMessages((prevMessages) => [...prevMessages, data]);
-            console.log(messages);
+            // console.log(messages);
         }
 
         if (Cookies.get("username") === undefined) {
-            console.log("Navigate");
+            // console.log("Navigate");
             navigate('/homepage');
         }
         fetchUserHubs();
+        fetchHubChannels();
 
     }, [navigate]);
 
