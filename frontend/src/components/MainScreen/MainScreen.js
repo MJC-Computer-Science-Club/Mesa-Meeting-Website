@@ -17,8 +17,7 @@ export default function MainScreen() {
     const handleSendMessage = () => {
 
         if (tempMessage.trim()) {
-            // onSendMessage(tempMessage);
-            setMessage(""); // Clear input after sending
+            setMessage("");
         }
     };
 
@@ -36,33 +35,6 @@ export default function MainScreen() {
     }
 
     const sendMessage = async (hId) => {
-        // try {
-        //     const response = await fetch('http://127.0.0.1:8000/postMessage/', { // Replace with your actual API endpoint
-        //         method: "POST",
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             'X-CSRFToken': Cookies.get("csrftoken"),
-        //             'Authorization': `Token ${Cookies.get("token")}`, // Assuming you store the token in localStorage
-        //         },
-        //         body: JSON.stringify({
-        //             "hub": currentHubName,
-        //             "content": tempMessage,
-        //             "user": Cookies.get("username"),
-        //             "created_at": "0"
-
-        //         })
-        //     });
-
-        //     if (!response.ok) {
-        //         throw new Error(`Error fetching user hub 1: ${response.statusText}`);
-        //     }
-
-        //     const data = await response.json();
-        //     console.log(data);
-        //     setTempMessage("");
-        // } catch (error) {
-        //     console.error('Error fetching user hub:', error);
-        // }
         wsRef.current.send(JSON.stringify({
             "hub": currentHubName,
             "content": tempMessage,
@@ -96,6 +68,7 @@ export default function MainScreen() {
             const data = await response.json();
             console.log(data)
             setHubs(data);
+            fetchSpecificHub(data[0].hub);
         } catch (error) {
             console.error('Error fetching user hubs:', error);
         }
