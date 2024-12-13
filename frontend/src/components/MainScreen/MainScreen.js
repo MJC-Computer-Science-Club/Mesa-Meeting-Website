@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState, useRef } from "react";
+import Defaultnavbar from '../Defaultnavbar';
 
 export default function MainScreen() {
 
@@ -9,6 +10,7 @@ export default function MainScreen() {
     const [currentHubName, setCurrentHubName] = useState("")
     const [messages, setMessages] = useState([]);
     const [tempMessage, setTempMessage] = useState("");
+    const [channels, setChannels] = useState([]);
 
     const wsRef = useRef(null);
 
@@ -112,7 +114,7 @@ export default function MainScreen() {
                     'X-CSRFToken': Cookies.get("csrftoken"),
                     'Authorization': `Token ${Cookies.get("token")}`, // Assuming you store the token in localStorage
                 },
-                body: JSON.stringify({ "hub": "Calculus 2" })
+                body: JSON.stringify({ "hub": "Calculus 2 hub" })
             });
 
             if (!response.ok) {
@@ -120,6 +122,7 @@ export default function MainScreen() {
             }
 
             const data = await response.json();
+            // setChannels(data)
             console.log("My data:", data);
         } catch (error) {
             console.error('Error fetching channel:', error);
@@ -157,6 +160,7 @@ export default function MainScreen() {
 
     return (
         <div>
+            {/* <Defaultnavbar channels={}/> */}
             <div className="hub-content">
                 <h1>{currentHubName}</h1>
                 <div className="hub-messages">

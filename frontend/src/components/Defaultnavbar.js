@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 
 
-export default function Defaultnavbar() {
+export default function Defaultnavbar({ currentChannel, onChannelClick, allChannels }) {
 
   const navigate = useNavigate();
   
@@ -21,6 +21,16 @@ export default function Defaultnavbar() {
         </Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
+        {channels.map((channel) => (
+          <Navbar.Text key={channel}>
+            <button
+              onClick={() => onChannelClick(channel)}
+              className={currentChannel === channel ? 'active' : ''}
+            >
+              {channel.toUpperCase()}
+            </button>
+          </Navbar.Text>
+        ))}
           <Navbar.Text>
             <div>
             {(Cookies.get("username") !== undefined) ? (
