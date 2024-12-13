@@ -26,7 +26,7 @@ export default function Defaultnavbar() {
             {(Cookies.get("username") !== undefined) ? (
                 <p>Welcome, {Cookies.get("username")}!</p>
                 ) : (
-                <Button className="btn btn-primary" onClick={() => navigate('/')}>
+                <Button className="btn btn-primary" onClick={() => navigate('/login')}>
                   Login
                 </Button> 
               )

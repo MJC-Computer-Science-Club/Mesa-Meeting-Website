@@ -15,7 +15,8 @@ function CreateAccount() {
         navigate("/login")
     };
 
-    const handleOnClick = async () => {
+    const handleOnClick = async (event) => {
+        event.preventDefault();
         try {
             const response = await fetch('http://127.0.0.1:8000/account_creation/', {
                 method: 'POST',
@@ -51,7 +52,7 @@ function CreateAccount() {
     }, [shouldRedirect]);
 
     return (
-        <Container className="d-flex justify-content-center align-items-center mt-5">
+        <Container className="d-flex justify-content-center align-items-center">
             <div className="login-container p-4 shadow">
                 <h2 className="text-center mb-4">Create Account</h2>
                 <Form>
@@ -83,8 +84,7 @@ function CreateAccount() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)} />
                     </Form.Group>
-                </Form>
-                <Button variant="primary" type="submit" className="w-100" onClick={handleOnClick}>
+                    <Button variant="primary" type="submit" className="w-100" onClick={handleOnClick}>
                         Create Account
                     </Button>
                 <p className="mt-3 text-center"> Changed your mind?</p>
@@ -93,6 +93,7 @@ function CreateAccount() {
                         Cancel
                     </Button>
                 </div>
+                </Form>
             </div>
         </Container>
     );
