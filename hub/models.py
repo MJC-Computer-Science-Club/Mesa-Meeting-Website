@@ -19,8 +19,15 @@ class HubMembership(models.Model):
     class Meta:
         unique_together = ('user', 'hub')
 
+class HubChannel(models.Model):
+    hub = models.ForeignKey(Hub, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.name} + {self.hub}"
+
 class Message(models.Model):
-    hub = models.ForeignKey(Hub, on_delete=models.CASCADE, related_name='messages')
+    hubChannels = models.ForeignKey(HubChannel, on_delete=models.CASCADE, related_name='messages')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='messages')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

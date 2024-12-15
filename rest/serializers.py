@@ -1,6 +1,6 @@
 # from user.models import User
 from django.contrib.auth.models import User
-from hub.models import Hub, HubMembership, Message
+from hub.models import Hub, HubMembership, Message, HubChannel
 from rest_framework import serializers
 
 # class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -30,11 +30,22 @@ class HubMembershipSerializer(serializers.ModelSerializer):
         model = HubMembership
         fields = ["hub", "user"]
 
+class HubChannelSerializer(serializers.ModelSerializer):
+
+    id = serializers.StringRelatedField()
+    hub = serializers.StringRelatedField()
+    name = serializers.StringRelatedField()
+
+    class Meta(object):
+        model = HubChannel
+        fields = ["id", "hub", "name"]
+
+
 class MessageSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field='username')
-    hub = serializers.SlugRelatedField(queryset=Hub.objects.all(), slug_field='name')
+    hubChannels = serializers.SlugRelatedField(queryset=HubChannel.objects.all(), slug_field='name')
     content = serializers.CharField()
 
     class Meta(object):
         model = Message
-        fields = ['id', 'hub', 'user', 'content', 'created_at']
+        fields = ['id', 'hubChannels', 'user', 'content', 'created_at']
