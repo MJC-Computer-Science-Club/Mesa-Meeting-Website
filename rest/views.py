@@ -76,7 +76,7 @@ def list_channel_hubs(request):
     # print("!!!!!!!!!!!!!", request.data["hub"])
     specificHub = Hub.objects.get(name=request.data["hub"])
     # print("1111111111111111 ",specificHub)
-    hub_channels = HubChannel.objects.filter(hub=1)
+    hub_channels = HubChannel.objects.filter(hub=specificHub)
     # print("222222222222", hub_channels)
     # Serialize the list of hubs
     serializer = HubChannelSerializer(hub_channels, many=True)
@@ -93,7 +93,7 @@ def list_specific_channel_hub(request):
     # Filter hubs where the user is a member
     hub_channels = HubChannel.objects.get(id=request.data["id"])
     print("Hub Channel!!!!!!!", hub_channels)
-    messages = hub_channels.messages.all().order_by('created_at')
+    messages = hub_channels.messages.all().order_by('-created_at')
 
     # Serialize the list of hubs
     serializer = HubChannelSerializer(hub_channels)

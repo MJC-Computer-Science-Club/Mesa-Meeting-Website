@@ -28,7 +28,9 @@ export default function MainScreen() {
     const handleChannelClick = (channel) => {
         // url = `ws://127.0.0.1:8000/ws/channel/1/`; // Updated to include channel
         setCurrentChannel(channel["id"]);
+        url = `ws://127.0.0.1:8000/ws/channel/${encodeURIComponent(channel["id"])}/`;
         console.log(`Navigated to: ${channel["name"]}`);
+        wsRef.current.close()
         fetchSpecificChannelHub(channel["id"]);
       };
 
@@ -48,7 +50,7 @@ export default function MainScreen() {
     const sendMessage = async (hId) => {
         console.log("Send message ", currentChannel);
         wsRef.current.send(JSON.stringify({
-            "channel": 1,
+            "channel": currentChannel,
             "content": tempMessage,
             "user": Cookies.get("username"),
             "created_at": "0"
@@ -132,8 +134,10 @@ export default function MainScreen() {
             }
 
             const data = await response.json();
-            setChannels(data)
+            setChannels(data);
+            setCurrentChannel(data[0].id);
             console.log("My data:", data);
+            fetchSpecificChannelHub(data[0].id);
         } catch (error) {
             console.error('Error fetching channel:', error);
         }
@@ -166,13 +170,18 @@ export default function MainScreen() {
     };
 
     useEffect(() => {
+        console.log("Redone", currentChannel);
+        if (currentChannel.length !== 0){
+            console.log("Nice??");
+            url = `ws://127.0.0.1:8000/ws/channel/${encodeURIComponent(currentChannel)}/`;
+        }
         const ws = new WebSocket(url, [], {
             headers: {
               Authorization: `Token ${Cookies.get("token")}}`,
             },
           });
 
-          console.log(ws);
+        console.log(ws);
 
         wsRef.current = ws;
 
@@ -182,7 +191,7 @@ export default function MainScreen() {
             let data = JSON.parse(e.data);
             console.log("Data:", data);
             console.log("Current messages: ", messages);
-            setMessages((prevMessages) => [...prevMessages, data]);
+            setMessages((prevMessages) => [data, ...prevMessages]);
             console.log(messages);
         }
 
@@ -196,7 +205,7 @@ export default function MainScreen() {
         }
         fetchUserHubs();
 
-    }, [navigate, currentChannel]);
+    }, [navigate]);
 
 
     return (

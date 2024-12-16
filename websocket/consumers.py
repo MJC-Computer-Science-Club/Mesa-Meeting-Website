@@ -22,7 +22,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Join the hub group
         await self.channel_layer.group_add(
             self.hub_group_name,
-            self.hub_channel_name
+            self.channel_name
         )
 
         await self.accept()
@@ -30,10 +30,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         print(f"Added {self.hub_channel_name} to group {self.hub_group_name}")
 
     async def disconnect(self, close_code):
-        print("DISCONNECTED")
+        print("DISCONNECTED!!!!!!!!!!!!!1")
         await self.channel_layer.group_discard(
             self.hub_group_name,
-            self.hub_channel_name
+            self.channel_name
         )
 
 
@@ -62,19 +62,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 self.hub_group_name,
                 {
-                    'type': "chat_message",
+                    'type': "chat.message",
                     'hubChannels': mchannel.id,
                     'user': user.username,
                     'content': content,
                     'created_at': message_data["created_at"],
                 }
             )
-            print("Broadcasted! 777777777777")
+            print("Broadcasted!")
 
     async def chat_message(self, event):
         # Send the message to WebSocket
-        print("!!!!!!!!!!!!! now", event)
-        print("uhmmm")
+        print("sent!")
         await self.send(text_data=json.dumps({
             'hubChannels': event.get('channel_id'),
             'user': event['user'],
