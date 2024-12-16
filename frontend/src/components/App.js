@@ -26,7 +26,6 @@ export default class App extends Component {
             <div>
 
                 <BrowserRouter>
-                <Defaultnavbar />
                         <Routes>
                             <Route exact path="/homepage" element={<HomePage />} />
                             <Route exact path="/login" element={<Login />} />

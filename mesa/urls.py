@@ -36,7 +36,9 @@ urlpatterns = [
     re_path("login/", views.loginReq),
     re_path("gethubs", views.list_user_hubs),
     re_path("getspecifichub", views.list_specific_hub),
-    re_path("postMessage", views.post_Message_To_Hub)
+    re_path("postMessage", views.post_Message_To_Hub),
+    re_path("getHubChannels", views.list_channel_hubs),
+    re_path("getSpecificChannel", views.list_specific_channel_hub)
 ]
 
 urlpatterns += router.urls

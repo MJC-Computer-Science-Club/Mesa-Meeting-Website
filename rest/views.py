@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from rest_framework import permissions, viewsets
-from rest.serializers import UserSerializer, HubSerializer, HubMembershipSerializer, MessageSerializer
+from rest.serializers import UserSerializer, HubSerializer, HubMembershipSerializer, MessageSerializer, HubChannelSerializer
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from hub.models import Hub, HubMembership, Message
+from hub.models import Hub, HubMembership, Message, HubChannel
 from django.contrib.auth import authenticate, login
 
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -72,20 +72,56 @@ def list_user_hubs(request):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def list_specific_hub(request):
-    # Filter hubs where the user is a member
-    user_hubs = Hub.objects.get(name=request.data["name"])
+def list_channel_hubs(request):
+    # print("!!!!!!!!!!!!!", request.data["hub"])
+    specificHub = Hub.objects.get(name=request.data["hub"])
+    # print("1111111111111111 ",specificHub)
+    hub_channels = HubChannel.objects.filter(hub=specificHub)
+    # print("222222222222", hub_channels)
+    # Serialize the list of hubs
+    serializer = HubChannelSerializer(hub_channels, many=True)
+    # print("333333333333333", serializer.data)
 
-    messages = user_hubs.messages.all().order_by('created_at')
+    # Return the serialized data
+    return Response(serializer.data)
+
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def list_specific_channel_hub(request):
+    print("!!!!!!!!", request.data)
+    # Filter hubs where the user is a member
+    hub_channels = HubChannel.objects.get(id=request.data["id"])
+    print("Hub Channel!!!!!!!", hub_channels)
+    messages = hub_channels.messages.all().order_by('-created_at')
 
     # Serialize the list of hubs
-    serializer = HubSerializer(user_hubs)
+    serializer = HubChannelSerializer(hub_channels)
     messageSerializer = MessageSerializer(messages, many=True)
 
     # Return the serialized data    
     return Response({
         "hub": serializer.data,
         "messages": messageSerializer.data
+    })
+
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def list_specific_hub(request):
+    # Filter hubs where the user is a member
+    user_hubs = Hub.objects.get(name=request.data["name"])
+
+    # messages = user_hubs.messages.all().order_by('created_at')
+
+    # Serialize the list of hubs
+    serializer = HubSerializer(user_hubs)
+    # messageSerializer = MessageSerializer(messages, many=True)
+
+    # Return the serialized data    
+    return Response({
+        "hub": serializer.data,
+        # "messages": messageSerializer.data
     })
 
 @api_view(['POST'])
