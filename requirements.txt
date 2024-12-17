@@ -2,3 +2,4 @@ django
 djangorestframework
 channels==3.0.5
 channels-redis
+pillow

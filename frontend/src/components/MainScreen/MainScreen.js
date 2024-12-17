@@ -11,11 +11,12 @@ export default function MainScreen() {
     const [messages, setMessages] = useState([]);
     const [tempMessage, setTempMessage] = useState("");
     const [channels, setChannels] = useState([]);
-    const [currentChannel, setCurrentChannel] = useState([])
+    const [currentChannel, setCurrentChannel] = useState([]);
+    const [selectedImage, setSelectedImage] = useState(null);
 
     const wsRef = useRef(null);
 
-    let url = `ws://127.0.0.1:8000/ws/channel/${encodeURIComponent("1")}/`; // Updated to include channel
+    let url = `ws://127.0.0.1:8000/ws/channel//`; // Updated to include channel
 
 
     const handleSendMessage = () => {
@@ -27,12 +28,15 @@ export default function MainScreen() {
 
     const handleChannelClick = (channel) => {
         // url = `ws://127.0.0.1:8000/ws/channel/1/`; // Updated to include channel
+        let tempChannel = currentChannel;
         setCurrentChannel(channel["id"]);
         url = `ws://127.0.0.1:8000/ws/channel/${encodeURIComponent(channel["id"])}/`;
         console.log(`Navigated to: ${channel["name"]}`);
-        wsRef.current.close()
+        if (tempChannel !== channel["id"]) {
+            wsRef.current.close();
+        }
         fetchSpecificChannelHub(channel["id"]);
-      };
+    };
 
     function removeHub(inputString) {
         // Split the string by ' '
@@ -52,10 +56,17 @@ export default function MainScreen() {
         wsRef.current.send(JSON.stringify({
             "channel": currentChannel,
             "content": tempMessage,
+            'image': selectedImage,
             "user": Cookies.get("username"),
             "created_at": "0"
         }))
         setTempMessage("");
+        setSelectedImage("");
+
+        const fileInput = document.querySelector('.image-input');
+        if (fileInput) {
+            fileInput.value = ''; // Clear the input field
+        }
     };
 
     const handleKeyDown = (e) => {
@@ -171,15 +182,15 @@ export default function MainScreen() {
 
     useEffect(() => {
         console.log("Redone", currentChannel);
-        if (currentChannel.length !== 0){
+        if (currentChannel.length !== 0) {
             console.log("Nice??");
             url = `ws://127.0.0.1:8000/ws/channel/${encodeURIComponent(currentChannel)}/`;
         }
         const ws = new WebSocket(url, [], {
             headers: {
-              Authorization: `Token ${Cookies.get("token")}}`,
+                Authorization: `Token ${Cookies.get("token")}}`,
             },
-          });
+        });
 
         console.log(ws);
 
@@ -203,14 +214,36 @@ export default function MainScreen() {
             // console.log("Navigate");
             navigate('/homepage');
         }
-        fetchUserHubs();
+        if (currentChannel.length === 0) {
+            console.log("Nice??");
+            fetchUserHubs();
+        }
 
-    }, [navigate]);
+    }, [navigate, currentChannel]);
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setSelectedImage(reader.result); // Set base64-encoded image
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    function ImageOrPDF({url}) {
+        if (url.slice(-3).toLowerCase() !== "pdf") {
+            return <img src={`http://127.0.0.1:8000${url}`} style={{maxWidth: '300px'}}></img>;
+        } else {
+            return <a href={`http://127.0.0.1:8000${url}`} target="_blank">{url}</a>
+        }
+    }
 
 
     return (
         <div>
-            <Defaultnavbar allChannels={channels} onChannelClick={handleChannelClick} /> 
+            <Defaultnavbar allChannels={channels} onChannelClick={handleChannelClick} />
             <div className="hub-content">
                 <h1>{currentHubName}</h1>
                 <div className="hub-messages">
@@ -218,6 +251,9 @@ export default function MainScreen() {
                         <div className="message" key={message.id}>
                             <p className="message-user">{message.user}</p>
                             <p className="message-content">{message.content}</p>
+                            {(message.image !== null) &&
+                                <ImageOrPDF url={message.image}/>
+                            }
                         </div>
                     ))}
                 </div>
@@ -229,6 +265,13 @@ export default function MainScreen() {
                         value={tempMessage}
                         onChange={(e) => setTempMessage(e.target.value)}
                         onKeyDown={handleKeyDown}
+                    />
+                    <input
+                        type="file"
+                        accept="*"
+                        className="image-input"
+                        onChange={handleImageChange}
+                        style={{ marginLeft: '10px' }}
                     />
                     <button className="send-button" onClick={sendMessage}>
                         Send
