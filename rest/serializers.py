@@ -45,7 +45,8 @@ class MessageSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field='username')
     hubChannels = serializers.SlugRelatedField(queryset=HubChannel.objects.all(), slug_field='name')
     content = serializers.CharField()
+    image = serializers.ImageField(required=False, allow_null=True)
 
     class Meta(object):
         model = Message
-        fields = ['id', 'hubChannels', 'user', 'content', 'created_at']
+        fields = ['id', 'hubChannels', 'user', 'content','image', 'created_at']

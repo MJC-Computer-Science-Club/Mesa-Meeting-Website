@@ -20,7 +20,7 @@ export default function Defaultnavbar({ currentChannel, onChannelClick, allChann
       <Container>
         <Navbar.Brand href="#home">
           <a href="/">
-            <img src={mesa_logo} alt="Logo" />
+            <img className="main-logo" src={mesa_logo} alt="Logo" />
           </a>
         </Navbar.Brand>
         <Navbar.Toggle />

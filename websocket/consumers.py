@@ -3,7 +3,8 @@ from asgiref.sync import async_to_sync, sync_to_async
 from rest.serializers import MessageSerializer
 from hub.models import Hub, Message, HubChannel
 from django.contrib.auth.models import User
-import json
+import json, base64
+from django.core.files.base import ContentFile
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -41,35 +42,45 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
             text_data_json = json.loads(text_data)
-            print(text_data_json)
+            # print(text_data_json)
             user = await sync_to_async(User.objects.get)(username=self.scope["user"])
             # user = self.scope["user"]  # Assuming authenticated user is available
             channel_name = text_data_json["channel"]
-            content = text_data_json["content"]
+            content = text_data_json.get("content", "")
+            image_data = text_data_json.get("image", None)
 
             # Ensure the hub exists asynchronously
             mchannel = await sync_to_async(HubChannel.objects.get)(id=channel_name)
+            # print("Image data: ", image_data)
 
-            # Save the message to the database
-            new_message = await sync_to_async(Message.objects.create)(
-                hubChannels=mchannel, user=user, content=content
-            )
+            image = None
+            if image_data:
+                format, imgstr = image_data.split(';base64,')  # Decode base64
+                ext = format.split('/')[-1]
+                image = ContentFile(base64.b64decode(imgstr), name=f"{user.username}_{channel_name}.{ext}")
 
-            # Serialize the saved message
-            serialized_message = await sync_to_async(MessageSerializer)(new_message)
-            message_data = serialized_message.data
+            if image != None or content != "":
+                # Save the message to the database
+                new_message = await sync_to_async(Message.objects.create)(
+                    hubChannels=mchannel, user=user, content=content, image=image
+                )
 
-            await self.channel_layer.group_send(
-                self.hub_group_name,
-                {
-                    'type': "chat.message",
-                    'hubChannels': mchannel.id,
-                    'user': user.username,
-                    'content': content,
-                    'created_at': message_data["created_at"],
-                }
-            )
-            print("Broadcasted!")
+                # Serialize the saved message
+                serialized_message = await sync_to_async(MessageSerializer)(new_message)
+                message_data = serialized_message.data
+
+                await self.channel_layer.group_send(
+                    self.hub_group_name,
+                    {
+                        'type': "chat.message",
+                        'hubChannels': mchannel.id,
+                        'user': user.username,
+                        'content': content,
+                        'image': message_data.get("image"),  # Include image URL
+                        'created_at': message_data["created_at"],
+                    }
+                )
+                print("Broadcasted!")
 
     async def chat_message(self, event):
         # Send the message to WebSocket
@@ -77,5 +88,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'hubChannels': event.get('channel_id'),
             'user': event['user'],
-            'content': event['content']
+            'content': event['content'],
+            'image': event.get('image'),  # Add image URL to frontend
         }))
